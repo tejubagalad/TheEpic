@@ -27,7 +27,8 @@ jobs:
           
   deploy:
     needs: build-and-push
-    runs-on: self-hosted # Deploys on local machine with Minikube
+    runs-on: [self-hosted, Linux, X64]
+ # Deploys on local machine with Minikube
 
     steps:
       - name: Checkout Repository
