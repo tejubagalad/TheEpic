@@ -26,30 +26,31 @@ jobs:
           tags: tejubagalad/theepic:latest
           
   deploy:
-  needs: build-and-push
-  runs-on: self-hosted
+    needs: build-and-push
+    runs-on: self-hosted # Deploys on local machine with Minikube
 
-  steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Start Minikube
-      run: |
-        minikube start --driver=docker
-        minikube status
+      - name: Start Minikube
+        run: |
+          minikube start --driver=docker
+          minikube status
 
-    - name: Pull Docker Image from Docker Hub
-      run: docker pull tejubagalad/theepic:latest
+      - name: Pull Docker Image from Docker Hub
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/theepic:latest
 
-    - name: Deploy to Minikube
-      run: |
-        kubectl apply -f K8/deploy.yml
-        kubectl get pods
+      - name: Deploy to Minikube using deploy.yml
+        run: |
+          kubectl apply -f K8/deploy.yml
+          kubectl get pods
 
-    - name: Expose theepic Service
-      run: minikube service list
+      - name: Expose theepic Service
+        run: |
+          minikube service list
 
-    - name: Get Minikube Service URL
-      run: minikube service theepic-service --url
+      - name: Get Minikube Service URL
+        run: |
 
-          
+          minikube service theepic-service --url
